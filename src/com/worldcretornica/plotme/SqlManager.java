@@ -31,7 +31,9 @@ public class SqlManager {
 	        + "`topX` INTEGER NOT NULL DEFAULT '0',"
 	        + "`bottomX` INTEGER NOT NULL DEFAULT '0',"
 	        + "`topZ` INTEGER NOT NULL DEFAULT '0',"
-	        + "`bottomZ` INTEGER NOT NULL DEFAULT '0',"
+            + "`bottomZ` INTEGER NOT NULL DEFAULT '0',"
+            + "`baseY` INTEGER NOT NULL DEFAULT '0',"
+            + "`height` INTEGER NOT NULL DEFAULT '256',"
 	        + "`biome` varchar(32) NOT NULL DEFAULT '0',"
 	        + "`expireddate` DATETIME NULL,"
 	        + "`finished` boolean NOT NULL DEFAULT '0',"
@@ -212,6 +214,30 @@ public class SqlManager {
             	set.close();
             	
             	/*** END Version 0.8 changes ***/
+
+                /*** START Version 0.14 changes ***/
+
+                //BaseY
+                set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " +
+                        "TABLE_NAME='plotmePlots' AND column_name='baseY'");
+                if(!set.next())
+                {
+                    statement.execute("ALTER TABLE plotmePlots ADD `baseY` INTEGER NOT NULL DEFAULT '0'");
+                    conn.commit();
+                }
+                set.close();
+
+                //Height
+                set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " +
+                        "TABLE_NAME='plotmePlots' AND column_name='height'");
+                if(!set.next())
+                {
+                    statement.execute("ALTER TABLE plotmePlots ADD `height` INTEGER NOT NULL DEFAULT '256'");
+                    conn.commit();
+                }
+                set.close();
+
+                /*** END Version 0.14 changes ***/
             	
             }
             else
@@ -363,15 +389,53 @@ public class SqlManager {
             	set.close();
             	found = false;
             	/*** END Version 0.8 changes ***/
-            	
-            	
+
+                /*** START Version 0.14 changes ***/
+
+                //baseY
+                set = statement.executeQuery("PRAGMA table_info(`plotmePlots`)");
+
+                while(set.next() && !found)
+                {
+                    column = set.getString(2);
+                    if(column.equalsIgnoreCase("baseY"))
+                        found = true;
+                }
+
+                if(!found)
+                {
+                    statement.execute("ALTER TABLE plotmePlots ADD `baseY` INTEGER NOT NULL DEFAULT '0';");
+                    conn.commit();
+                }
+                set.close();
+                found = false;
+
+                //baseY
+                set = statement.executeQuery("PRAGMA table_info(`plotmePlots`)");
+
+                while(set.next() && !found)
+                {
+                    column = set.getString(2);
+                    if(column.equalsIgnoreCase("height"))
+                        found = true;
+                }
+
+                if(!found)
+                {
+                    statement.execute("ALTER TABLE plotmePlots ADD `height` INTEGER NOT NULL DEFAULT '256';");
+                    conn.commit();
+                }
+                set.close();
+                found = false;
+
+                /*** END Version 0.14 changes ***/
             }
-        } 
-        catch (SQLException ex) 
+        }
+        catch (SQLException ex)
         {
         	PlotMe.logger.severe(PlotMe.PREFIX + " Update table exception :");
         	PlotMe.logger.severe("  " + ex.getMessage());
-        } 
+        }
         finally 
         {
             try 
