@@ -1465,9 +1465,8 @@ public class PlotManager
 							if(PlotMe.usinglwc)
 							{
 								LWC lwc = com.griefcraft.lwc.LWC.getInstance();
-								Material material = block.getType();
 								
-								boolean ignoreBlockDestruction = Boolean.parseBoolean(lwc.resolveProtectionConfiguration(material, "ignoreBlockDestruction"));
+								boolean ignoreBlockDestruction = Boolean.parseBoolean(lwc.resolveProtectionConfiguration(block, "ignoreBlockDestruction"));
 								
 								if (!ignoreBlockDestruction)
 								{
