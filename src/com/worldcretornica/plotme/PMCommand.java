@@ -10,7 +10,12 @@ import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import static org.bukkit.ChatColor.BLUE;
+import static org.bukkit.ChatColor.RED;
+import static org.bukkit.ChatColor.RESET;
+import static org.bukkit.ChatColor.AQUA;
+import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.ITALIC;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -24,12 +29,6 @@ import com.worldcretornica.plotme.utils.MinecraftFontWidthCalculator;
 public class PMCommand implements CommandExecutor
 {
 	private PlotMe plugin;
-	private final ChatColor BLUE = ChatColor.BLUE;
-	private final ChatColor RED = ChatColor.RED;
-	private final ChatColor RESET = ChatColor.RESET;
-	private final ChatColor AQUA = ChatColor.AQUA;
-	private final ChatColor GREEN = ChatColor.GREEN;
-	private final ChatColor ITALIC = ChatColor.ITALIC;
 	private final String PREFIX = PlotMe.PREFIX;
 	private final String LOG = "[" + PlotMe.NAME + " Event] ";
 	private final boolean isAdv = PlotMe.advancedlogging;
@@ -2424,8 +2423,8 @@ public class PMCommand implements CommandExecutor
 									
 									for(String[] comment : plot.comments)
 									{
-										p.sendMessage(ChatColor.BLUE + C("WordFrom") + " : " + RED + comment[0]);
-										p.sendMessage("" + RESET + ChatColor.ITALIC + comment[1]);
+										p.sendMessage(BLUE + C("WordFrom") + " : " + RED + comment[0]);
+										p.sendMessage("" + RESET + ITALIC + comment[1]);
 									}
 									
 								}
@@ -2523,7 +2522,7 @@ public class PMCommand implements CommandExecutor
 									
 									PlotManager.setBiome(w, id, plot, biome);
 								
-									Send(p, C("MsgBiomeSet") + " " + ChatColor.BLUE + FormatBiome(biome.name()) + " " + f(-price));
+									Send(p, C("MsgBiomeSet") + " " + BLUE + FormatBiome(biome.name()) + " " + f(-price));
 									
 									if(isAdv)
 									{
@@ -2541,7 +2540,7 @@ public class PMCommand implements CommandExecutor
 						{
 							Plot plot = PlotMe.plotmaps.get(w.getName().toLowerCase()).plots.get(id);
 							
-							Send(p, C("MsgPlotUsingBiome") + " " + ChatColor.BLUE + FormatBiome(plot.biome.name()));
+							Send(p, C("MsgPlotUsingBiome") + " " + BLUE + FormatBiome(plot.biome.name()));
 						}
 					}
 					else
@@ -3395,8 +3394,8 @@ public class PMCommand implements CommandExecutor
 					Location bottom = PlotManager.getPlotBottomLoc(p.getWorld(), plotid);
 					Location top = PlotManager.getPlotTopLoc(p.getWorld(), plotid);
 					
-					p.sendMessage(BLUE + C("WordBottom") + ": " + RESET + bottom.getBlockX() + ChatColor.BLUE + "," + RESET + bottom.getBlockZ());
-					p.sendMessage(BLUE + C("WordTop") + ": " + RESET + top.getBlockX() + ChatColor.BLUE + "," + RESET + top.getBlockZ());
+					p.sendMessage(BLUE + C("WordBottom") + ": " + RESET + bottom.getBlockX() + BLUE + "," + RESET + bottom.getBlockZ());
+					p.sendMessage(BLUE + C("WordTop") + ": " + RESET + top.getBlockX() + BLUE + "," + RESET + top.getBlockZ());
 				}
 			}
 		}
