@@ -1,5 +1,9 @@
 package com.worldcretornica.plotme;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectStreamConstants;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +15,10 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Plot implements Comparable<Plot> {
 
@@ -19,6 +27,8 @@ public class Plot implements Comparable<Plot> {
 	private HashSet<String> allowed;
 	private HashSet<String> denied;
 	public Biome biome;
+    public int baseY;
+    public int height;
 	public Date expireddate;
 	public boolean finished;
 	public List<String[]> comments;
@@ -39,6 +49,9 @@ public class Plot implements Comparable<Plot> {
 		allowed = new HashSet<String>();
 		denied = new HashSet<String>();
 		biome = Biome.PLAINS;
+
+        baseY = 0;
+        height = 256;
 		
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, 7);
@@ -63,8 +76,37 @@ public class Plot implements Comparable<Plot> {
 		denied = new HashSet<String>();
 		biome = Biome.PLAINS;
 		id = tid;
-		
-		if(days == 0)
+
+        File configfile = new File(PlotMe.configpath, "config.yml");
+        FileConfiguration config = new YamlConfiguration();
+
+        ConfigurationSection plotWorldConfig = null;
+
+        try
+        {
+            config.load(configfile);
+            plotWorldConfig = config.getConfigurationSection("worlds." + world);
+        }
+        catch (IOException e)
+        {
+            PlotMe.logger.severe(PlotMe.PREFIX + "can't read configuration file");
+            e.printStackTrace();
+        }
+        catch (InvalidConfigurationException e)
+        {
+            PlotMe.logger.severe(PlotMe.PREFIX + "invalid configuration format");
+            e.printStackTrace();
+        }
+
+        if (plotWorldConfig == null) {
+            baseY = 0;
+            height = 256;
+        } else {
+            baseY = plotWorldConfig.getInt("PlotBase", 0);
+            height = plotWorldConfig.getInt("PlotHeight", 256);
+        }
+
+        if(days == 0)
 		{
 			expireddate = null;
 		}else{
@@ -84,13 +126,15 @@ public class Plot implements Comparable<Plot> {
 		currentbid = 0;
 	}
 	
-	public Plot(String o, String w, int tX, int bX, int tZ, int bZ, String bio, Date exp, boolean fini, HashSet<String> al,
+	public Plot(String o, String w, int tX, int bX, int tZ, int bZ, String bio, int baseY, int height, Date exp, boolean fini, HashSet<String> al,
 			List<String[]> comm, String tid, double custprice, boolean sale, String finishdt, boolean prot, String bidder, 
 			Double bid, boolean isauctionned, HashSet<String> den)
 	{
 		owner = o;
 		world = w;
 		biome = Biome.valueOf(bio);
+        this.baseY = baseY;
+        this.height = height;
 		expireddate = exp;
 		finished = fini;
 		allowed = al;
@@ -309,8 +353,13 @@ public class Plot implements Comparable<Plot> {
 		
 		return false;
 	}
-	
-	public boolean isDenied(String name)
+
+    private boolean contains(int y) {
+        if (y < baseY || y > baseY + height) return false;
+        return true;
+    }
+
+    public boolean isDenied(String name)
 	{
 		if(isAllowed(name, false, false)) return false;
 				
