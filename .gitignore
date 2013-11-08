@@ -115,7 +115,6 @@ Backup*/
 UpgradeLog*.XML
 
 
-
 ##################
 ## IntelliJ IDEA
 ##################
@@ -124,6 +123,15 @@ UpgradeLog*.XML
 *.iml
 *.iws
 out/
+#############
+## Netbeans
+#############
+
+nbproject/
+build.xml
+build/
+dist/
+manifest.mf
 
 ############
 ## Windows
