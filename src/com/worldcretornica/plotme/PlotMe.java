@@ -310,7 +310,8 @@ public class PlotMe extends JavaPlugin
 		allowToDeny = config.getBoolean("allowToDeny", true);
 
 		ConfigurationSection worlds;
-		
+
+        // Initialise worlds config if doesn't exist or load config if it does.
 		if(!config.contains("worlds"))
 		{
 			worlds = config.createSection("worlds");
@@ -319,7 +320,9 @@ public class PlotMe extends JavaPlugin
 			
 			plotworld.set("PlotAutoLimit", 1000);
 			plotworld.set("PathWidth", 7);
-			plotworld.set("PlotSize", 32);
+            plotworld.set("PlotSize", 32);
+            plotworld.set("PlotBase", 0);
+            plotworld.set("PlotHeight", 256);
 			
 			plotworld.set("BottomBlockId", "7");
 			plotworld.set("WallBlockId", "44");
@@ -376,6 +379,7 @@ public class PlotMe extends JavaPlugin
 		
 		for(String worldname : worlds.getKeys(false))
 		{
+            // Generate PlotMapInfo for each world
 			PlotMapInfo tempPlotInfo = new PlotMapInfo();
 			ConfigurationSection currworld = worlds.getConfigurationSection(worldname);
 			
@@ -532,7 +536,7 @@ public class PlotMe extends JavaPlugin
 		} 
 		catch (IOException e) 
 		{
-			logger.severe(PREFIX + "error writting configurations");
+			logger.severe(PREFIX + "error writing configurations");
 			e.printStackTrace();
 		}
 		
